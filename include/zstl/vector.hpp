@@ -13,6 +13,9 @@ class vector{
         size_ = array;
         capacity_ = array + 10;
     }
+    type& operator[](int index){
+        return *(array + index)
+    }
     iterator begin(){
         return iterator(array);
     }
