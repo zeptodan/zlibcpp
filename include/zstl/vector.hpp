@@ -1,3 +1,4 @@
+#include<stdexcept>
 template<typename type>
 class vector{
     private:
@@ -14,9 +15,15 @@ class vector{
          return (size == capacity) ? true : false;
     }
     void add(type& obj){
-        array[size++] = obj;
+        *size++ = obj;
         if(is_full()){
-            resize(capacity * 1.5);
+            resize((capacity - array) * 1.5);
+        }
+    }
+    void add(type&& obj){
+        *size++ = obj;
+        if(is_full()){
+            resize((capacity - array) * 1.5);
         }
     }
     void resize(int new_size){
@@ -27,5 +34,11 @@ class vector{
         }
         array = temp;
         capacity = temp + new_size;
+    }
+    type& get(int index){
+        if(array + index >= capacity){
+            throw std::out_of_range("index out of bounds");
+        }
+        return array[index];
     }
 };
