@@ -26,7 +26,13 @@ class vector{
         return array == size_;
     }
     void erase(int index){
-        
+        if (array + index >= size_){
+            throw std::out_of_range("out of bounds");
+        }
+        for (type* temp = array + index + 1; temp != size_;++temp){
+            *(temp - 1) = *temp;
+        }
+        size_--;
     }
     void add(type& obj){
         *size_++ = obj;
