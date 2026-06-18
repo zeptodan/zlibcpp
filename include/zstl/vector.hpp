@@ -14,13 +14,13 @@ class vector{
         capacity_ = array + 10;
     }
     type& operator[](int index){
-        return *(array + index)
+        return *(array + index);
     }
     iterator begin(){
         return iterator(array);
     }
     iterator end(){
-        return iterator(capacity_)
+        return iterator(capacity_);
     }
     bool is_full(){
          return (size_ == capacity_) ? true : false;
