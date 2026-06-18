@@ -1,6 +1,8 @@
 #include<stdexcept>
+#include"vector_iterator.hpp"
 template<typename type>
 class vector{
+    using iterator = vector_iterator<type>;
     private:
     type* array;
     type* size_;
@@ -11,8 +13,20 @@ class vector{
         size_ = array;
         capacity_ = array + 10;
     }
+    iterator begin(){
+        return iterator(array);
+    }
+    iterator end(){
+        return iterator(capacity_)
+    }
     bool is_full(){
          return (size_ == capacity_) ? true : false;
+    }
+    bool empty(){
+        return array == size_;
+    }
+    void erase(int index){
+        
     }
     void add(type& obj){
         *size_++ = obj;
