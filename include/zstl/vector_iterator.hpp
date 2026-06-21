@@ -1,6 +1,8 @@
 template<typename T>
 class vector_iterator{
+    private:
     T* ptr_;
+    public:
     vector_iterator(T* ptr) : ptr_(ptr) {}
     T& operator*(){
         return *ptr_;
@@ -14,10 +16,10 @@ class vector_iterator{
         ptr_++;
         return temp;
     }
-    bool operator==(T& itr){
+    bool operator==(vector_iterator& itr){
         return ptr_ == itr.ptr_;
     }
-    bool operator!=(T& itr){
+    bool operator!=(vector_iterator& itr){
         return ptr_ != itr.ptr_;
     }
 };

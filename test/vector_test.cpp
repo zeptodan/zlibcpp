@@ -29,3 +29,17 @@ TEST(vector_tests, vector_sub){
     EXPECT_EQ(vec.size(),1);
     EXPECT_EQ(vec[0],2);
 }
+TEST(vector_tests, vector_iterator_test){
+    int nums[5] = {1,2,3,4,5};
+    vector<int> vec;
+    vec.add(1);
+    vec.add(2);
+    vec.add(3);
+    vec.add(4);
+    vec.add(5);
+    int i = 0;
+    for(int num : vec){
+        EXPECT_EQ(num, nums[i]);
+        i++;
+    }
+}

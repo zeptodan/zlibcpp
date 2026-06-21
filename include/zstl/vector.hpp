@@ -20,7 +20,7 @@ class vector{
         return iterator(array);
     }
     iterator end(){
-        return iterator(capacity_);
+        return iterator(size_);
     }
     bool is_full(){
          return (size_ == capacity_) ? true : false;
