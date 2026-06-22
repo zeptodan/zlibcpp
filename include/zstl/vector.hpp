@@ -13,6 +13,43 @@ class vector{
         size_ = array;
         capacity_ = array + 10;
     }
+    vector(const vector& vec){
+        int size = vec.size_ - vec.array;
+        array = new type[vec.capacity_ - vec.array];
+        for(int i = 0;i < size;i++){
+            *(array + i) = *(vec.array + i);
+        }
+        size_ = array + size;
+        capacity_ = array + (vec.capacity_ - vec.array);
+    }
+    vector(vector&& vec) : array(vec.array), size_(vec.size_), capacity_(vec.capacity_){
+        vec.array = nullptr;
+        vec.size_ = nullptr;
+        vec.capacity_ = nullptr;
+    }
+    vector& operator=(vector& vec){
+        int size = vec.size_ - vec.array;
+        if (size > capacity_ - array){
+            resize(size);
+        }
+        for (int i = 0; i < size;i++){
+            *(array + i) = *(vec.array + i); 
+        }
+        size_ = array + size;
+    }
+    vector& operator=(vector&& vec) noexcept {
+        int size = vec.size_ - vec.array;
+        if (size > capacity_ - array){
+            resize(size);
+        }
+        for (int i = 0; i < size;i++){
+            *(array + i) = std::move(*(vec.array + i));
+        }
+        size_ = array + size;
+    }
+    ~vector(){
+        delete[] array;
+    }
     type& operator[](int index){
         return *(array + index);
     }
