@@ -15,7 +15,7 @@ class vector{
     }
     vector(std::initializer_list<type> list){
         array = new type[list.size()];
-        size_ = array;
+        size_ = array + list.size();
         for(auto begin = list.begin(), i = 0; begin != list.end();begin++,i++){
             *(array + i) = *begin;
         }
@@ -44,6 +44,7 @@ class vector{
             *(array + i) = *(vec.array + i); 
         }
         size_ = array + size;
+        return *this;
     }
     vector& operator=(vector&& vec) noexcept {
         int size = vec.size_ - vec.array;
@@ -54,6 +55,7 @@ class vector{
             *(array + i) = std::move(*(vec.array + i));
         }
         size_ = array + size;
+        return *this;
     }
     ~vector(){
         delete[] array;

@@ -64,3 +64,41 @@ TEST(vector_tests, vector_resize_iterator_test){
         i++;
     }
 }
+TEST(vector_tests, vector_constructor_assignment_test){
+    vector<int> vec{1,2,3};
+    EXPECT_EQ(vec[0],1);
+    EXPECT_EQ(vec[1],2);
+    EXPECT_EQ(vec[2],3);
+    vector<int> vec2(vec);
+    EXPECT_EQ(vec2[0],1);
+    EXPECT_EQ(vec2[1],2);
+    EXPECT_EQ(vec2[2],3);
+    vector<int> vec3(std::move(vec2));
+    EXPECT_EQ(vec3[0],1);
+    EXPECT_EQ(vec3[1],2);
+    EXPECT_EQ(vec3[2],3);
+    vector<int> vec4{1,2};
+    vec4 = vec3;
+    EXPECT_EQ(vec4[0],1);
+    EXPECT_EQ(vec4[1],2);
+    EXPECT_EQ(vec4[2],3);
+    vector<int> vec5{1,2};
+    vec5 = std::move(vec4);
+    EXPECT_EQ(vec5[0],1);
+    EXPECT_EQ(vec5[1],2);
+    EXPECT_EQ(vec5[2],3);
+}
+// TEST(vector_tests, vector_std_compat_test){
+//     vector<int> vec{6,3,7,2,8,1,9,4,5,0};
+//     std::sort(vec.begin(),vec.end());
+//     EXPECT_EQ(vec[0],0);
+//     EXPECT_EQ(vec[1],1);
+//     EXPECT_EQ(vec[2],2);
+//     EXPECT_EQ(vec[3],3);
+//     EXPECT_EQ(vec[4],4);
+//     EXPECT_EQ(vec[5],5);
+//     EXPECT_EQ(vec[6],6);
+//     EXPECT_EQ(vec[7],7);
+//     EXPECT_EQ(vec[8],8);
+//     EXPECT_EQ(vec[9],9);
+// }
