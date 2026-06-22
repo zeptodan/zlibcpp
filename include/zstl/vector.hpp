@@ -13,6 +13,14 @@ class vector{
         size_ = array;
         capacity_ = array + 10;
     }
+    vector(std::initializer_list<type> list){
+        array = new type[list.size()];
+        size_ = array;
+        for(auto begin = list.begin(), i = 0; begin != list.end();begin++,i++){
+            *(array + i) = *begin;
+        }
+        capacity_ = array + list.size();
+    }
     vector(const vector& vec){
         int size = vec.size_ - vec.array;
         array = new type[vec.capacity_ - vec.array];
