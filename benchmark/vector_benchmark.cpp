@@ -2,7 +2,7 @@
 #include"zstl/vector.hpp"
 void zstl_vectoradd(vector<int>& vec,int n){
     for(int i = 0; i < n; i++){
-        vec.add(i);
+        vec.push_back(i);
     }
 }
 void stl_vectoradd(std::vector<int>& vec,int n){
