@@ -1,5 +1,6 @@
 #include<gtest/gtest.h>
 #include<algorithm>
+#include<numeric>
 #include"zstl/vector.hpp"
 TEST(vector_tests, vector_add){
     vector<int> vec;
@@ -91,15 +92,20 @@ TEST(vector_tests, vector_constructor_assignment_test){
 }
 TEST(vector_tests, vector_std_compat_test){
     vector<int> vec{6,3,7,2,8,1,9,4,5,0};
+    std::vector<int> stdvec{6,3,7,2,8,1,9,4,5,0};
     std::sort(vec.begin(),vec.end());
-    EXPECT_EQ(vec[0],0);
-    EXPECT_EQ(vec[1],1);
-    EXPECT_EQ(vec[2],2);
-    EXPECT_EQ(vec[3],3);
-    EXPECT_EQ(vec[4],4);
-    EXPECT_EQ(vec[5],5);
-    EXPECT_EQ(vec[6],6);
-    EXPECT_EQ(vec[7],7);
-    EXPECT_EQ(vec[8],8);
-    EXPECT_EQ(vec[9],9);
+    std::sort(stdvec.begin(),stdvec.end());
+    for (int i = 0; i < stdvec.size();i++){
+        EXPECT_EQ(stdvec[i],vec[i]);
+    }
+    auto it = std::find(vec.begin(),vec.end(),5);
+    auto it2 = std::find(stdvec.begin(),stdvec.end(),5);
+    EXPECT_EQ(*it,*it2);
+    bool fd = std::binary_search(vec.begin(),vec.end(),8);
+    bool fd2 = std::binary_search(stdvec.begin(),stdvec.end(),8);
+    EXPECT_EQ(fd,fd2);
+    int sum = std::accumulate(vec.begin(),vec.end(),0);
+    int sum2 = std::accumulate(stdvec.begin(),stdvec.end(),0);
+    EXPECT_EQ(sum, sum2);
+
 }
