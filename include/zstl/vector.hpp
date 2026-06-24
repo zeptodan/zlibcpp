@@ -3,6 +3,8 @@
 template<typename type>
 class vector{
     using iterator = vector_iterator<type>;
+    using const_iterator = vector_iterator<const type>;
+    using size_type = std::size_t;
     private:
     type* array;
     type* size_;
@@ -30,12 +32,12 @@ class vector{
         size_ = array + size;
         capacity_ = array + (vec.capacity_ - vec.array);
     }
-    vector(vector&& vec) : array(vec.array), size_(vec.size_), capacity_(vec.capacity_){
+    vector(vector&& vec) noexcept : array(vec.array), size_(vec.size_), capacity_(vec.capacity_){
         vec.array = nullptr;
         vec.size_ = nullptr;
         vec.capacity_ = nullptr;
     }
-    vector& operator=(vector& vec){
+    vector& operator=(const vector& vec){
         int size = vec.size_ - vec.array;
         if (size > capacity_ - array){
             resize(size);
@@ -60,23 +62,38 @@ class vector{
     ~vector(){
         delete[] array;
     }
-    type& operator[](int index){
+    type& operator[](int index) noexcept{
         return *(array + index);
     }
-    iterator begin(){
+    const type& operator[](int index) const noexcept{
+        return *(array + index);
+    }
+    iterator begin() noexcept{
         return iterator(array);
     }
-    iterator end(){
+    iterator end() noexcept{
         return iterator(size_);
     }
-    bool is_full(){
+    const_iterator cbegin() const noexcept{
+        return const_iterator(array);
+    }
+    const_iterator cend() const noexcept{
+        return const_iterator(size_);
+    }
+    type* data() noexcept{
+        return array;
+    }
+    const type* data() const noexcept{
+        return array;
+    }
+    bool is_full() const noexcept{
          return (size_ == capacity_) ? true : false;
     }
-    bool empty(){
+    bool empty() const noexcept{
         return array == size_;
     }
-    void erase(int index){
-        if (array + index >= size_){
+    void erase(size_type index){
+        if (array + index >= size_ || index < 0){
             throw std::out_of_range("out of bounds");
         }
         for (type* temp = array + index + 1; temp != size_;++temp){
@@ -84,17 +101,33 @@ class vector{
         }
         size_--;
     }
-    void add(type& obj){
+    void push_back(const type& obj){
         *size_++ = obj;
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
     }
-    void add(type&& obj){
-        *size_++ = obj;
+    void push_back(type&& obj){
+        *size_++ = std::move(obj);
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
+    }
+    type& front() noexcept{
+        return *array;
+    }
+    const type& front() const noexcept{
+        return *array;
+    }
+    type& back() noexcept{
+        return *(size - 1);
+    }
+    const type& back() const noexcept{
+        return *(size - 1);
+    }
+    void pop_back(){
+        size--;
+        return;
     }
     void resize(int new_size){
         type* temp = new type[new_size];
@@ -105,16 +138,22 @@ class vector{
         array = temp;
         capacity_ = temp + new_size;
     }
-    type& get(int index){
-        if(array + index >= capacity_){
+    type& get(int index) noexcept{
+        if(array + index >= capacity_ || index < 0){
             throw std::out_of_range("index out of bounds");
         }
         return array[index];
     }
-    int size(){
+    const type& get(int index) const noexcept{
+        if(array + index >= capacity_ || index < 0){
+            throw std::out_of_range("index out of bounds");
+        }
+        return array[index];
+    }
+    int size() const noexcept{
         return size_ - array;
     }
-    int capacity(){
+    int capacity() const noexcept{
         return capacity_ - array;
     }
 };
