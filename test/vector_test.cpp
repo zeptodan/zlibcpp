@@ -1,4 +1,5 @@
 #include<gtest/gtest.h>
+#include<algorithm>
 #include"zstl/vector.hpp"
 TEST(vector_tests, vector_add){
     vector<int> vec;
@@ -88,17 +89,17 @@ TEST(vector_tests, vector_constructor_assignment_test){
     EXPECT_EQ(vec5[1],2);
     EXPECT_EQ(vec5[2],3);
 }
-// TEST(vector_tests, vector_std_compat_test){
-//     vector<int> vec{6,3,7,2,8,1,9,4,5,0};
-//     std::sort(vec.begin(),vec.end());
-//     EXPECT_EQ(vec[0],0);
-//     EXPECT_EQ(vec[1],1);
-//     EXPECT_EQ(vec[2],2);
-//     EXPECT_EQ(vec[3],3);
-//     EXPECT_EQ(vec[4],4);
-//     EXPECT_EQ(vec[5],5);
-//     EXPECT_EQ(vec[6],6);
-//     EXPECT_EQ(vec[7],7);
-//     EXPECT_EQ(vec[8],8);
-//     EXPECT_EQ(vec[9],9);
-// }
+TEST(vector_tests, vector_std_compat_test){
+    vector<int> vec{6,3,7,2,8,1,9,4,5,0};
+    std::sort(vec.begin(),vec.end());
+    EXPECT_EQ(vec[0],0);
+    EXPECT_EQ(vec[1],1);
+    EXPECT_EQ(vec[2],2);
+    EXPECT_EQ(vec[3],3);
+    EXPECT_EQ(vec[4],4);
+    EXPECT_EQ(vec[5],5);
+    EXPECT_EQ(vec[6],6);
+    EXPECT_EQ(vec[7],7);
+    EXPECT_EQ(vec[8],8);
+    EXPECT_EQ(vec[9],9);
+}
