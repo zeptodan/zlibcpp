@@ -131,11 +131,13 @@ class vector{
     }
     void resize(int new_size){
         type* temp = new type[new_size];
-        size_ = temp;
-        for (type* start = array; start != capacity_;start++){
-            * size_ ++ = *start;
+        type* start2 = temp;
+        for (type* start = array; start != size_;start++,start2++){
+            *start2 = *start;
         }
+        delete[] array;
         array = temp;
+        size_ = start2;
         capacity_ = temp + new_size;
     }
     type& get(int index) noexcept{
