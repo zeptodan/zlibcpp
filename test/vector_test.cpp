@@ -20,8 +20,8 @@ TEST(vector_tests, vector_add){
     ASSERT_EQ(vec.size(),9);
     ASSERT_EQ(vec.capacity(),10);
     vec.push_back(4);
-    ASSERT_EQ(vec.is_full(),false);
-    ASSERT_EQ(vec.capacity(),15);
+    ASSERT_EQ(vec.is_full(),true);
+    ASSERT_EQ(vec.capacity(),10);
 }
 TEST(vector_tests, vector_sub){
     vector<int> vec;
@@ -108,4 +108,13 @@ TEST(vector_tests, vector_std_compat_test){
     int sum2 = std::accumulate(stdvec.begin(),stdvec.end(),0);
     EXPECT_EQ(sum, sum2);
 
+}
+TEST(vector_tests, vector_obj_test){
+    vector<std::string> vec{"huh","shush"};
+    std::vector<std::string> stdvec{"huh","shush"};
+    EXPECT_EQ(vec[0],stdvec[0]);
+    EXPECT_EQ(vec[1],stdvec[1]);
+    vec.push_back("what da hell is dis senorita thats crazy aint it wow ma man");
+    stdvec.push_back("what da hell is dis senorita thats crazy aint it wow ma man");
+    EXPECT_EQ(vec[2],stdvec[2]);
 }

@@ -102,16 +102,16 @@ class vector{
         size_--;
     }
     void push_back(const type& obj){
-        *size_++ = obj;
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
+        *size_++ = obj;
     }
     void push_back(type&& obj){
-        *size_++ = std::move(obj);
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
+        *size_++ = std::move(obj);
     }
     type& front() noexcept{
         return *array;

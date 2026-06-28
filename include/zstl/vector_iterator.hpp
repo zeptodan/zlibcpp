@@ -31,8 +31,11 @@ class vector_iterator{
         ptr_--;
         return temp;
     }
+    reference operator[](difference_type n) const noexcept {
+        return ptr_[n];
+    }
     difference_type operator-(const vector_iterator& itr) const noexcept{
-        return itr.ptr_ - ptr_;
+        return ptr_ - itr.ptr_;
     }
     bool operator==(const vector_iterator& itr) const noexcept{
         return ptr_ == itr.ptr_;
@@ -47,10 +50,10 @@ class vector_iterator{
         return ptr_ > itr.ptr_;
     }
     bool operator<=(const vector_iterator& itr) const noexcept{
-        return this < itr || this == itr;
+        return ptr_ <= itr.ptr_;
     }
     bool operator>=(const vector_iterator& itr) const noexcept{
-        return this > itr || this == itr;
+        return ptr_ >= itr.ptr_;
     }
     vector_iterator& operator+=(difference_type n) noexcept{
         ptr_+=n;
