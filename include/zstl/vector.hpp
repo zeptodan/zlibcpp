@@ -1,5 +1,6 @@
 #include<stdexcept>
 #include"vector_iterator.hpp"
+#define GROWTH_FACTOR 2
 template<typename type>
 class vector{
     using iterator = vector_iterator<type>;
@@ -114,14 +115,14 @@ class vector{
     }
     void push_back(const type& obj){
         if(is_full()){
-            resize((capacity_ - array) * 1.5);
+            resize((capacity_ - array) * GROWTH_FACTOR);
         }
         new (size_) type(obj);
         ++size_;
     }
     void push_back(type&& obj){
         if(is_full()){
-            resize((capacity_ - array) * 1.5);
+            resize((capacity_ - array) * GROWTH_FACTOR);
         }
         new (size_) type(std::move(obj));
         ++size_;
