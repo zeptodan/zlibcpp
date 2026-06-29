@@ -9,27 +9,34 @@ class vector{
     type* array;
     type* size_;
     type* capacity_;
+    void swap(vector& vec) noexcept{
+        std::swap(array,vec.array);
+        std::swap(size_,vec.size_);
+        std::swap(capacity_,vec.capacity_);
+    }
     public:
     vector(){
-        array = new type[10];
+        array = static_cast<type*>(::operator new(sizeof(type) * 10));
         size_ = array;
         capacity_ = array + 10;
     }
     vector(std::initializer_list<type> list){
-        array = new type[list.size()];
-        size_ = array + list.size();
-        for(auto begin = list.begin(), i = 0; begin != list.end();begin++,i++){
-            *(array + i) = *begin;
+        array = static_cast<type*>(::operator new(sizeof(type) * list.size()));
+        size_ = array;
+        for(auto& elem : list){
+            new (size_) type(elem);
+            ++size_;
         }
         capacity_ = array + list.size();
     }
     vector(const vector& vec){
-        int size = vec.size_ - vec.array;
-        array = new type[vec.capacity_ - vec.array];
+        size_type size = vec.size_ - vec.array;
+        array = static_cast<type*>(::operator new(sizeof(type) * (vec.capacity_ - vec.array)));
+        size_ = array;
         for(int i = 0;i < size;i++){
-            *(array + i) = *(vec.array + i);
+            new (size_) type(*(vec.array + i));
+            ++size_;
         }
-        size_ = array + size;
         capacity_ = array + (vec.capacity_ - vec.array);
     }
     vector(vector&& vec) noexcept : array(vec.array), size_(vec.size_), capacity_(vec.capacity_){
@@ -38,29 +45,33 @@ class vector{
         vec.capacity_ = nullptr;
     }
     vector& operator=(const vector& vec){
-        int size = vec.size_ - vec.array;
-        if (size > capacity_ - array){
-            resize(size);
+        if(this != &vec){
+            vector temp(vec);
+            swap(temp);
         }
-        for (int i = 0; i < size;i++){
-            *(array + i) = *(vec.array + i); 
-        }
-        size_ = array + size;
         return *this;
     }
     vector& operator=(vector&& vec) noexcept {
-        int size = vec.size_ - vec.array;
-        if (size > capacity_ - array){
-            resize(size);
+        if (this != &vec){
+            for (type* i = array; i != size_;i++){
+                i->~type();
+            }
+            ::operator delete(array);
+
+            array = vec.array;
+            size_ = vec.size_;
+            capacity_ = vec.capacity_;
+            vec.array = nullptr;
+            vec.size_ = nullptr;
+            vec.capacity_ = nullptr;
         }
-        for (int i = 0; i < size;i++){
-            *(array + i) = std::move(*(vec.array + i));
-        }
-        size_ = array + size;
         return *this;
     }
     ~vector(){
-        delete[] array;
+        for(type* i = array; i != size_;i++){
+            i->~type();
+        }
+        ::operator delete(array);
     }
     type& operator[](int index) noexcept{
         return *(array + index);
@@ -105,13 +116,15 @@ class vector{
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
-        *size_++ = obj;
+        new (size_) type(obj);
+        ++size_;
     }
     void push_back(type&& obj){
         if(is_full()){
             resize((capacity_ - array) * 1.5);
         }
-        *size_++ = std::move(obj);
+        new (size_) type(std::move(obj));
+        ++size_;
     }
     type& front() noexcept{
         return *array;
@@ -120,22 +133,24 @@ class vector{
         return *array;
     }
     type& back() noexcept{
-        return *(size - 1);
+        return *(size_ - 1);
     }
     const type& back() const noexcept{
-        return *(size - 1);
+        return *(size_ - 1);
     }
     void pop_back(){
-        size--;
+        size_->~type();
+        size_--;
         return;
     }
     void resize(int new_size){
-        type* temp = new type[new_size];
+        type* temp = static_cast<type*>(::operator new(sizeof(type) * new_size));
         type* start2 = temp;
         for (type* start = array; start != size_;start++,start2++){
-            *start2 = *start;
+            new (start2) type(std::move(*start));
+            start->~type();
         }
-        delete[] array;
+        ::operator delete(array);
         array = temp;
         size_ = start2;
         capacity_ = temp + new_size;
