@@ -8,6 +8,7 @@ class unordered_map{
         Node* next;
         Node(const key& key) : pair(key, Value()), next(nullptr) {}
         Node(const Key& key, const Value& value): pair(key,value), next(nullptr) {}
+        Node(const Node& node) = default;
     };
     Node** buckets;
     size_type bucket_count;
@@ -16,32 +17,48 @@ class unordered_map{
     Hash hash;
     Equal equal;
     public:
-    unordered_map(){
-        bucket_count = 10;
+    unordered_map() : bucket_count(10), size(0) {
         buckets = new Node*[bucket_count]();
-        size = 0;
     }
-    unordered_map(const unordered_map& map){
-
-    }
-    unordered_map(unordered_map&& map){
-
-    }
-    unordered_map& operator=(const unordered_map& map){
-
-    }
-    unordered_map& operator=(unordered_map&& map){
-        
-    }
-    ~unordered_map(){
-        for(size_type i = 0; i < bucket_count;i++){
-            Node* next = buckets[i];
-            if(next){
-                buckets[i] = next->next;
-                delete next;
-                next = buckets[i];
+    unordered_map(const unordered_map& map) : bucket_count(map.bucket_count), size(map.size) {
+        buckets = new Node*[bucket_count]();
+        for (size_type i = 0; i < bucket_count;i++){
+            Node* next = map.buckets[i];
+            while(next){
+                Node* node = new Node(*next);
+                buckets[i] = node;
+                next = next->next;
             }
         }
+    }
+    unordered_map(unordered_map&& map) : buckets(map.buckets), bucket_count(map.bucket_count), size(map.size) {
+        map.buckets = nullptr;
+        map.bucket_count = 0;
+        map.size = 0;
+    }
+    unordered_map& operator=(const unordered_map& map){
+        if (this == &map){
+            return *this;
+        }
+        unordered_map temp(map);
+        swap(temp);
+        return *this;
+    }
+    unordered_map& operator=(unordered_map&& map){
+        if (this == &map){
+            return *this;
+        }
+        clear();
+        delete[] buckets;
+        buckets = map.buckets;
+        bucket_count = map.bucket_count;
+        size = map.size;
+        map.buckets = nullptr;
+        map.bucket_count = 0;
+        map.size = 0;
+    }
+    ~unordered_map(){
+        clear();
         delete[] buckets;
     }
     Value& operator[](const Key& key){
@@ -62,6 +79,27 @@ class unordered_map{
         buckets[index] = node;
         ++size;
         return node->pair.second;
+    }
+    void swap(const unordered_map& map){
+        std::swap(buckets,map.buckets);
+        std::swap(bucket_count,map.bucket_count);
+        std::swap(size,map.size);
+        std::swap(max_load_factor,map.max_load_factor);
+        std::swap(hash,map.hash);
+        std::swap(equal,map.equal);
+    }
+    void clear(){
+        if (!buckets){
+            return;
+        }
+        for(size_type i = 0; i < bucket_count;i++){
+            Node* next = buckets[i];
+            while(next){
+                buckets[i] = next->next;
+                delete next;
+                next = buckets[i];
+            }
+        }
     }
     void rehash(size_type new_count){
         Node** temp = new Node*[new_count]();

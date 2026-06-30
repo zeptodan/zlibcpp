@@ -69,6 +69,9 @@ class vector{
         return *this;
     }
     ~vector(){
+        if (!array){
+            return;
+        }
         for(type* i = array; i != size_;i++){
             i->~type();
         }
