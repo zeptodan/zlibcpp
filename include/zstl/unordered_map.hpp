@@ -117,4 +117,29 @@ class unordered_map{
         buckets = temp;
         bucket_count = new_count;
     }
+    size_type erase(const Key& key){
+        size_type index = hash(key) % bucket_count;
+        Node* prev = buckets[index];
+        if (!prev){
+            return 0;
+        }
+        if (equal(prev->pair.first, key)){
+            buckets[index] = prev->next;
+            delete prev;
+            --size;
+            return 1;
+        }
+        Node* next = prev->next;
+        while(next){
+            if(equal(next->pair.first,key)){
+                prev->next = next->next;
+                delete next;
+                --size;
+                return 1;
+            }
+            prev = next;
+            next = next->next;
+        }
+        return 0;
+    }
 };
