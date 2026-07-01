@@ -1,4 +1,5 @@
 #include<functional>
+#include"zstl/unordered_map_iterator.hpp"
 template<typename Key, typename Value,typename Hash = std::hash<Key>,typename Equal = std::equal_to<Key>>
 class unordered_map{
     private:
@@ -24,6 +25,8 @@ class unordered_map{
         std::swap(hash,map.hash);
         std::swap(equal,map.equal);
     }
+    using iterator = unordered_map_iterator<Node>;
+    using const_iterator = unordered_map_iterator<const Node>;
     public:
     unordered_map() : bucket_count(10), size(0) {
         buckets = new Node*[bucket_count]();
@@ -68,6 +71,18 @@ class unordered_map{
     ~unordered_map(){
         clear();
         delete[] buckets;
+    }
+    iterator begin(){
+        // return iterator(buckets[0],buckets,0,bucket_count);
+    }
+    iterator end(){
+        return iterator(nullptr,buckets,bucket_count,bucket_count);
+    }
+    const_iterator cbegin() const {
+        
+    }
+    const_iterator cend() const {
+        return const_iterator(nullptr,buckets,bucket_count,bucket_count);
     }
     Value& operator[](const Key& key){
         size_type index = hash(key) % bucket_count;
