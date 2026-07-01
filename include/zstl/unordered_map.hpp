@@ -6,7 +6,7 @@ class unordered_map{
     struct Node{
         std::pair<const Key, Value> pair;
         Node* next;
-        Node(const key& key) : pair(key, Value()), next(nullptr) {}
+        Node(const Key& key) : pair(key, Value()), next(nullptr) {}
         Node(const Key& key, const Value& value): pair(key,value), next(nullptr) {}
         Node(const Node& node) = default;
     };
@@ -16,6 +16,14 @@ class unordered_map{
     float max_load_factor = 1.0;
     Hash hash;
     Equal equal;
+    void swap(unordered_map& map) noexcept{
+        std::swap(buckets,map.buckets);
+        std::swap(bucket_count,map.bucket_count);
+        std::swap(size,map.size);
+        std::swap(max_load_factor,map.max_load_factor);
+        std::swap(hash,map.hash);
+        std::swap(equal,map.equal);
+    }
     public:
     unordered_map() : bucket_count(10), size(0) {
         buckets = new Node*[bucket_count]();
@@ -31,7 +39,7 @@ class unordered_map{
             }
         }
     }
-    unordered_map(unordered_map&& map) : buckets(map.buckets), bucket_count(map.bucket_count), size(map.size) {
+    unordered_map(unordered_map&& map) noexcept : buckets(map.buckets), bucket_count(map.bucket_count), size(map.size) {
         map.buckets = nullptr;
         map.bucket_count = 0;
         map.size = 0;
@@ -44,7 +52,7 @@ class unordered_map{
         swap(temp);
         return *this;
     }
-    unordered_map& operator=(unordered_map&& map){
+    unordered_map& operator=(unordered_map&& map) noexcept{
         if (this == &map){
             return *this;
         }
@@ -79,14 +87,6 @@ class unordered_map{
         buckets[index] = node;
         ++size;
         return node->pair.second;
-    }
-    void swap(const unordered_map& map){
-        std::swap(buckets,map.buckets);
-        std::swap(bucket_count,map.bucket_count);
-        std::swap(size,map.size);
-        std::swap(max_load_factor,map.max_load_factor);
-        std::swap(hash,map.hash);
-        std::swap(equal,map.equal);
     }
     void clear(){
         if (!buckets){
