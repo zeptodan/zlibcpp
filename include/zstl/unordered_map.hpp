@@ -73,13 +73,23 @@ class unordered_map{
         delete[] buckets;
     }
     iterator begin(){
-        // return iterator(buckets[0],buckets,0,bucket_count);
+        for (std::size_t i = 0; i < bucket_count; i++){
+            if (buckets[i]){
+                return iterator(buckets[i],buckets,i,bucket_count);
+            }
+        }
+        return iterator(nullptr,buckets,bucket_count,bucket_count);
     }
     iterator end(){
         return iterator(nullptr,buckets,bucket_count,bucket_count);
     }
     const_iterator cbegin() const {
-        
+        for (std::size_t i = 0; i < bucket_count; i++){
+            if (buckets[i]){
+                return const_iterator(buckets[i],buckets,i,bucket_count);
+            }
+        }
+        return const_iterator(nullptr,buckets,bucket_count,bucket_count);
     }
     const_iterator cend() const {
         return const_iterator(nullptr,buckets,bucket_count,bucket_count);
