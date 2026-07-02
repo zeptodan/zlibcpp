@@ -7,7 +7,7 @@ class unordered_map_iterator{
     std::size_t bucket_count;
     public:
     using iterator_category = std::forward_iterator_tag;
-    using value_type = std::pair<const Key, T>;
+    using value_type = typename T::value_type;
     using difference_type = std::ptrdiff_t;
     using pointer = value_type*;
     using reference = value_type&;
@@ -52,10 +52,10 @@ class unordered_map_iterator{
     pointer operator->() const noexcept{
         return &(ptr_->pair);
     }
-    bool operator==(unordered_map_iterator& itr) const noexcept{
+    bool operator==(const unordered_map_iterator& itr) const noexcept{
         return ptr_ == itr.ptr_;
     }
-    bool operator!=(unordered_map_iterator& itr) const noexcept{
+    bool operator!=(const unordered_map_iterator& itr) const noexcept{
         return ptr_ != itr.ptr_;
     }
 };

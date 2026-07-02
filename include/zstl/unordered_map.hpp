@@ -5,7 +5,8 @@ class unordered_map{
     private:
     using size_type = std::size_t;
     struct Node{
-        std::pair<const Key, Value> pair;
+        using value_type = std::pair<const Key, Value>;
+        value_type pair;
         Node* next;
         Node(const Key& key) : pair(key, Value()), next(nullptr) {}
         Node(const Key& key, const Value& value): pair(key,value), next(nullptr) {}
@@ -13,14 +14,14 @@ class unordered_map{
     };
     Node** buckets;
     size_type bucket_count;
-    size_type size;
+    size_type size_;
     float max_load_factor = 1.0;
     Hash hash;
     Equal equal;
     void swap(unordered_map& map) noexcept{
         std::swap(buckets,map.buckets);
         std::swap(bucket_count,map.bucket_count);
-        std::swap(size,map.size);
+        std::swap(size_,map.size_);
         std::swap(max_load_factor,map.max_load_factor);
         std::swap(hash,map.hash);
         std::swap(equal,map.equal);
@@ -28,10 +29,10 @@ class unordered_map{
     using iterator = unordered_map_iterator<Node>;
     using const_iterator = unordered_map_iterator<const Node>;
     public:
-    unordered_map() : bucket_count(10), size(0) {
+    unordered_map() : bucket_count(10), size_(0) {
         buckets = new Node*[bucket_count]();
     }
-    unordered_map(const unordered_map& map) : bucket_count(map.bucket_count), size(map.size) {
+    unordered_map(const unordered_map& map) : bucket_count(map.bucket_count), size_(map.size_) {
         buckets = new Node*[bucket_count]();
         for (size_type i = 0; i < bucket_count;i++){
             Node* next = map.buckets[i];
@@ -42,10 +43,10 @@ class unordered_map{
             }
         }
     }
-    unordered_map(unordered_map&& map) noexcept : buckets(map.buckets), bucket_count(map.bucket_count), size(map.size) {
+    unordered_map(unordered_map&& map) noexcept : buckets(map.buckets), bucket_count(map.bucket_count), size_(map.size_) {
         map.buckets = nullptr;
         map.bucket_count = 0;
-        map.size = 0;
+        map.size_ = 0;
     }
     unordered_map& operator=(const unordered_map& map){
         if (this == &map){
@@ -63,10 +64,11 @@ class unordered_map{
         delete[] buckets;
         buckets = map.buckets;
         bucket_count = map.bucket_count;
-        size = map.size;
+        size_ = map.size_;
         map.buckets = nullptr;
         map.bucket_count = 0;
-        map.size = 0;
+        map.size_ = 0;
+        return *this;
     }
     ~unordered_map(){
         clear();
@@ -103,14 +105,14 @@ class unordered_map{
             }
             next = next->next;
         }
-        if (size + 1 > max_load_factor * bucket_count){
+        if (size_ + 1 > max_load_factor * bucket_count){
             rehash(bucket_count * 2);
             index = hash(key) % bucket_count;
         }
         Node* node = new Node(key);
         node->next = buckets[index];
         buckets[index] = node;
-        ++size;
+        ++size_;
         return node->pair.second;
     }
     void clear(){
@@ -125,6 +127,17 @@ class unordered_map{
                 next = buckets[i];
             }
         }
+    }
+    bool contains(const Key& key) const noexcept {
+        size_type index = hash(key) % bucket_count;
+        Node* next = buckets[index];
+        while(next){
+            if (equal(next->pair.first,key)){
+                return true;
+            }
+            next = next->next;
+        }
+        return false;
     }
     void rehash(size_type new_count){
         Node** temp = new Node*[new_count]();
@@ -151,7 +164,7 @@ class unordered_map{
         if (equal(prev->pair.first, key)){
             buckets[index] = prev->next;
             delete prev;
-            --size;
+            --size_;
             return 1;
         }
         Node* next = prev->next;
@@ -159,12 +172,15 @@ class unordered_map{
             if(equal(next->pair.first,key)){
                 prev->next = next->next;
                 delete next;
-                --size;
+                --size_;
                 return 1;
             }
             prev = next;
             next = next->next;
         }
         return 0;
+    }
+    size_type size() const noexcept {
+        return size_;
     }
 };
