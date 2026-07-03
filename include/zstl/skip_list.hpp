@@ -7,6 +7,7 @@ class skip_list{
         using value_type = std::pair<const Key, Value>;
         value_type pair;
         std::vector<Node*> next;
+        Node() = default;
         Node(const Key& key) : pair(key, Value()) {}
         Node(const Key& key, const Value& value): pair(key,value) {}
         Node(const Node& node) = default;
@@ -16,11 +17,12 @@ class skip_list{
     int current_level;
     int prob = 0.5;
     size_type size_;
+    Compare compare;
     public:
     using iterator = unordered_map_iterator<Node>;
     using const_iterator = unordered_map_iterator<const Node>;
-    skip_list(){
-
+    skip_list() : current_level(0), size_(0){
+        head = new Node();
     }
     skip_list(const skip_list& sl){
 
@@ -35,7 +37,39 @@ class skip_list{
 
     }
     Value& operator[](const Key& key){
-
+        Node* current = head;
+        int layer = current_level;
+        Node* pred[current_level];
+        for(int layer = current_level - 1; layer >= 0;layer--){
+            while(current->next[layer] != nullptr && compare(key, current->next[layer]->pair.first)){
+                current = current->next[layer];
+            }
+            pred[layer] = current;
+        }
+        if(pred[0]->next != nullptr && key == pred[0]->next->pair.first){
+            return pred[0]->next->pair.second;
+        }
+        Node* node = new Node(key);
+        int level = generate_level();
+        if (level > current_level){
+            for (int i = current_level; i < level;i++){
+                pred[i] = head;
+            }
+            current_level = level;
+        }
+        //insert the node
+        for (int i = level;i >= 0; i--){
+            node->next[i] = pred[i]->next[i];
+            pred[i]->next[i] = node;
+        }
+        return node->pair.second;
+    }
+    int generate_level(){
+        int level = 0;
+        while (rand() % 2 == 0 && level != max_level - 1){
+            level++;
+        }
+        return level;
     }
     bool contains(const Key& key){
 
