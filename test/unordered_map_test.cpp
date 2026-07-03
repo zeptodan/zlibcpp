@@ -18,6 +18,7 @@ TEST(unordered_map_test, add_test){
     map[11] = 31;
     EXPECT_EQ(map[11],31);
     EXPECT_EQ(map[7],9);
+    EXPECT_EQ(map.size(),11);
 }
 TEST(unordered_map_test, erase_test){
     unordered_map<int, int> map;
