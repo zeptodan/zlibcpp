@@ -38,16 +38,15 @@ class skip_list{
     }
     Value& operator[](const Key& key){
         Node* current = head;
-        int layer = current_level;
-        Node* pred[current_level];
+        Node* pred[max_level];
         for(int layer = current_level - 1; layer >= 0;layer--){
-            while(current->next[layer] != nullptr && compare(key, current->next[layer]->pair.first)){
+            while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
                 current = current->next[layer];
             }
             pred[layer] = current;
         }
-        if(pred[0]->next != nullptr && key == pred[0]->next->pair.first){
-            return pred[0]->next->pair.second;
+        if(pred[0]->next[0] != nullptr && key == pred[0]->next[0]->pair.first){
+            return pred[0]->next[0]->pair.second;
         }
         Node* node = new Node(key);
         int level = generate_level();
@@ -72,7 +71,16 @@ class skip_list{
         return level;
     }
     bool contains(const Key& key){
-
+        Node* current = head;
+        for(int layer = current_level - 1; layer >= 0;layer--){
+            while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
+                current = current->next[layer];
+            }
+        }
+        if(current->next[0] != nullptr && key == current->next[0]->pair.first){
+            return true;
+        }
+        return false;
     }
     size_type erase(const Key& key){
 
