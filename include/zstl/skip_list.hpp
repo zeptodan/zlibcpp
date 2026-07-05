@@ -53,7 +53,19 @@ class skip_list{
         return *this;
     }
     skip_list& operator=(skip_list&& sl) noexcept{
-
+        Node* current = head->next[0], *next;
+        while(current != nullptr){
+            next = current->next[0];
+            delete current;
+            current = next;
+        }
+        delete head;
+        head = sl.head;
+        size_ = sl.size_;
+        current_level = sl.current_level;
+        sl.head = nullptr;
+        sl.size_ = 0;
+        sl.current_level = 0;
     }
     void swap(skip_list& sl){
         std::swap(head, sl.head);
