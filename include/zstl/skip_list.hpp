@@ -24,22 +24,45 @@ class skip_list{
     skip_list() : current_level(0), size_(0){
         head = new Node();
     }
-    skip_list(const skip_list& sl){
-
+    skip_list(const skip_list& sl) : size_(0), current_level(0) {
+        head = new Node();
+        Node* current = sl.head;
+        while (current->next[0] != nullptr){
+            (*this)[current->next[0]->pair.first] = current->next[0]->pair.second;
+            current = current->next[0];
+        }
     }
-    skip_list(skip_list&& sl) noexcept{
-
+    skip_list(skip_list&& sl) : size_(sl.size_), current_level(sl.current_level), head(sl.head) noexcept{
+        sl.head = nullptr;
+        sl.size_ = 0;
+        sl.current_level = 0;
+    }
+    ~skip_list(){
+        Node* current = head->next[0], *next;
+        while(current != nullptr){
+            next = current->next[0];
+            delete current;
+            current = next;
+        }
+        delete head;
     }
     skip_list& operator=(const skip_list& sl){
-
+        skip_list temp(sl);
+        swap(temp);
+        return *this;
     }
     skip_list& operator=(skip_list&& sl) noexcept{
 
     }
+    void swap(skip_list& sl){
+        std::swap(head, sl.head);
+        std::swap(size_, sl.size_);
+        std::swap(current_level, sl.current_level);
+    }
     Value& operator[](const Key& key){
         Node* current = head;
         Node* pred[max_level];
-        for(int layer = current_level - 1; layer >= 0;layer--){
+        for(int layer = current_level; layer >= 0;layer--){
             while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
                 current = current->next[layer];
             }
@@ -72,7 +95,7 @@ class skip_list{
     }
     bool contains(const Key& key){
         Node* current = head;
-        for(int layer = current_level - 1; layer >= 0;layer--){
+        for(int layer = current_level; layer >= 0;layer--){
             while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
                 current = current->next[layer];
             }
@@ -85,7 +108,7 @@ class skip_list{
     size_type erase(const Key& key){
         Node* current = head;
         Node* pred[max_level];
-        for(int layer = current_level - 1; layer >= 0;layer--){
+        for(int layer = current_level; layer >= 0;layer--){
             while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
                 current = current->next[layer];
             }
@@ -97,7 +120,7 @@ class skip_list{
                 pred[i].next[i] = target->next[0];
             }
             delete target;
-            while(current_level > 1 && head->next[current_level - 1] == nullptr){
+            while(current_level > 0 && head->next[current_level] == nullptr){
                 current_level--;
             }
             return 1;
