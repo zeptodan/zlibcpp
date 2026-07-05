@@ -6,23 +6,26 @@ class skip_list_iterator{
     using pointer = value_type*;
     using reference = value_type&;
     Node* ptr_;
-    skip_list_iterator(Node* ptr) : ptr_(ptr) {}
+    skip_list_iterator(const Node* ptr) : ptr_(ptr) {}
     skip_list_iterator& operator++(){
-
+        ptr_ = ptr_->next[0];
+        return *this;
     }
     skip_list_iterator operator++(int){
-
+        skip_list_iterator temp(ptr_);
+        ptr_ = ptr_->next[0];
+        return temp;
     }
     reference operator*() const noexcept{
-
+        return ptr_->pair.second;
     }
     pointer operator->() const noexcept{
-
+        return &ptr_->pair.second;
     }
-    bool operator==() const noexcept{
-
+    bool operator==(const skip_list_iterator& sl) const noexcept{
+        return ptr_ == sl.ptr_;
     }
-    bool operator!=() const noexcept{
-        
+    bool operator!=(const skip_list_iterator& sl) const noexcept{
+        return ptr_ != sl.ptr_;
     }
 };

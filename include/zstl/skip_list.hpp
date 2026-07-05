@@ -1,4 +1,5 @@
 #include<functional>
+#include"zstl/skip_list_iterator.hpp"
 template<typename Key, typename Value, typename Compare = std::less<Key>>
 class skip_list{
     private:
@@ -19,8 +20,8 @@ class skip_list{
     size_type size_;
     Compare compare;
     public:
-    using iterator = unordered_map_iterator<Node>;
-    using const_iterator = unordered_map_iterator<const Node>;
+    using iterator = skip_list_iterator<Node>;
+    using const_iterator = skip_list_iterator<const Node>;
     skip_list() : current_level(0), size_(0){
         head = new Node();
     }
@@ -128,16 +129,16 @@ class skip_list{
         return 0;
     }
     iterator begin() noexcept {
-        
+        return iterator(head->next[0]);
     }
     iterator end() noexcept {
-
+        return iterator(nullptr);
     }
     const_iterator cbegin() const noexcept {
-
+        return const_iterator(head->next[0]);
     }
     const_iterator cend() const noexcept {
-
+        return const_iterator(nullptr);
     }
     size_type size() const noexcept {
         return size_;
