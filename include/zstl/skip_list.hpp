@@ -83,7 +83,26 @@ class skip_list{
         return false;
     }
     size_type erase(const Key& key){
-
+        Node* current = head;
+        Node* pred[max_level];
+        for(int layer = current_level - 1; layer >= 0;layer--){
+            while(current->next[layer] != nullptr && compare(current->next[layer]->pair.first, key)){
+                current = current->next[layer];
+            }
+            pred[layer] = current;
+        }
+        if(pred[0]->next[0] != nullptr && key == pred[0]->next[0]->pair.first){
+            Node* target = pred[0]->next[0];
+            for (int i = current_level; i >= 0; i--){
+                pred[i].next[i] = target->next[0];
+            }
+            delete target;
+            while(current_level > 1 && head->next[current_level - 1] == nullptr){
+                current_level--;
+            }
+            return 1;
+        }
+        return 0;
     }
     iterator begin() noexcept {
         
