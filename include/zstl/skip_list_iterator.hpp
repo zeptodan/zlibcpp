@@ -1,12 +1,14 @@
 template<typename Node>
 class skip_list_iterator{
+    private:
+    Node* ptr_;
+    public:
     using value_type = typename Node::value_type;
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using pointer = value_type*;
     using reference = value_type&;
-    Node* ptr_;
-    skip_list_iterator(const Node* ptr) : ptr_(ptr) {}
+    skip_list_iterator(Node* ptr) : ptr_(ptr) {}
     skip_list_iterator& operator++(){
         ptr_ = ptr_->next[0];
         return *this;

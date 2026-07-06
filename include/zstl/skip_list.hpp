@@ -24,28 +24,32 @@ class skip_list{
     using const_iterator = skip_list_iterator<const Node>;
     skip_list() : current_level(0), size_(0){
         head = new Node();
+        head->next.resize(max_level);
     }
     skip_list(const skip_list& sl) : size_(0), current_level(0) {
         head = new Node();
+        head->next.resize(max_level);
         Node* current = sl.head;
         while (current->next[0] != nullptr){
             (*this)[current->next[0]->pair.first] = current->next[0]->pair.second;
             current = current->next[0];
         }
     }
-    skip_list(skip_list&& sl) : size_(sl.size_), current_level(sl.current_level), head(sl.head) noexcept{
+    skip_list(skip_list&& sl) noexcept : size_(sl.size_), current_level(sl.current_level), head(sl.head){
         sl.head = nullptr;
         sl.size_ = 0;
         sl.current_level = 0;
     }
     ~skip_list(){
-        Node* current = head->next[0], *next;
-        while(current != nullptr){
-            next = current->next[0];
-            delete current;
-            current = next;
+        if (head){
+            Node* current = head->next[0], *next;
+            while(current != nullptr){
+                next = current->next[0];
+                delete current;
+                current = next;
+            }
+            delete head;
         }
-        delete head;
     }
     skip_list& operator=(const skip_list& sl){
         skip_list temp(sl);
@@ -53,19 +57,22 @@ class skip_list{
         return *this;
     }
     skip_list& operator=(skip_list&& sl) noexcept{
-        Node* current = head->next[0], *next;
-        while(current != nullptr){
-            next = current->next[0];
-            delete current;
-            current = next;
+        if (head){
+            Node* current = head->next[0], *next;
+            while(current != nullptr){
+                next = current->next[0];
+                delete current;
+                current = next;
+            }
+            delete head;
         }
-        delete head;
         head = sl.head;
         size_ = sl.size_;
         current_level = sl.current_level;
         sl.head = nullptr;
         sl.size_ = 0;
         sl.current_level = 0;
+        return *this;
     }
     void swap(skip_list& sl){
         std::swap(head, sl.head);
@@ -86,8 +93,10 @@ class skip_list{
         }
         Node* node = new Node(key);
         int level = generate_level();
+        node->next.resize(level + 1);
+        size_++;
         if (level > current_level){
-            for (int i = current_level; i < level;i++){
+            for (int i = current_level + 1; i <= level;i++){
                 pred[i] = head;
             }
             current_level = level;
@@ -130,12 +139,13 @@ class skip_list{
         if(pred[0]->next[0] != nullptr && key == pred[0]->next[0]->pair.first){
             Node* target = pred[0]->next[0];
             for (int i = current_level; i >= 0; i--){
-                pred[i].next[i] = target->next[0];
+                pred[i]->next[i] = target->next[0];
             }
             delete target;
             while(current_level > 0 && head->next[current_level] == nullptr){
                 current_level--;
             }
+            size_--;
             return 1;
         }
         return 0;

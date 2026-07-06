@@ -23,6 +23,10 @@ add_executable(unordered_map_test test/unordered_map_test.cpp)
 target_link_libraries(unordered_map_test PRIVATE zlib GTest::gtest_main)
 gtest_discover_tests(unordered_map_test)
 
+add_executable(skip_list_test test/skip_list_test.cpp)
+target_link_libraries(skip_list_test PRIVATE zlib GTest::gtest_main)
+gtest_discover_tests(skip_list_test)
+
 add_executable(vector_benchmark benchmark/vector_benchmark.cpp)
 target_link_libraries(vector_benchmark PRIVATE zlib benchmark::benchmark)
 
