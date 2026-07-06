@@ -32,3 +32,6 @@ target_link_libraries(vector_benchmark PRIVATE zlib benchmark::benchmark)
 
 add_executable(unordered_map_benchmark benchmark/unordered_map_benchmark.cpp)
 target_link_libraries(unordered_map_benchmark PRIVATE zlib benchmark::benchmark)
+
+add_executable(skip_list_benchmark benchmark/skip_list_benchmark.cpp)
+target_link_libraries(skip_list_benchmark PRIVATE zlib benchmark::benchmark)
