@@ -1,4 +1,5 @@
-#include<mutex.h>
+#include<mutex>
+#include<condition_variable>
 template<typename T>
 class locked_stack{
     private:
@@ -28,7 +29,7 @@ class locked_stack{
     }
     std::shared_ptr<T> pop() {
         std::unique_lock lk(mut);
-        cond.wait(lk, [this](){return top()});
+        cond.wait(lk, [this](){return top();});
         std::shared_ptr<T> ptr = std::make_shared<T>(std::move(top()->data));
         node* tmp = head;
         head = head->next;

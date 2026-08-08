@@ -27,6 +27,10 @@ add_executable(skip_list_test test/skip_list_test.cpp)
 target_link_libraries(skip_list_test PRIVATE zlib GTest::gtest_main)
 gtest_discover_tests(skip_list_test)
 
+add_executable(locked_stack test/locked_stack_test.cpp)
+target_link_libraries(locked_stack PRIVATE zlib GTest::gtest_main)
+gtest_discover_tests(locked_stack)
+
 add_executable(vector_benchmark benchmark/vector_benchmark.cpp)
 target_link_libraries(vector_benchmark PRIVATE zlib benchmark::benchmark)
 
