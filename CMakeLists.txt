@@ -41,4 +41,4 @@ add_executable(skip_list_benchmark benchmark/skip_list_benchmark.cpp)
 target_link_libraries(skip_list_benchmark PRIVATE zlib benchmark::benchmark)
 
 add_executable(locked_stack_benchmark benchmark/locked_stack_benchmark.cpp)
-target_link_libraries(skip_list_benchmark PRIVATE zlib benchmark::benchmark)
+target_link_libraries(locked_stack_benchmark PRIVATE zlib benchmark::benchmark)
