@@ -14,6 +14,7 @@ class atomic_stack{
         bool is_popped = head.compare_exchange_weak(node_ptr, node_ptr->next);
         if(is_popped){
             value = std::move(node_ptr->data);
+            delete node_ptr;
         }
         return is_popped;
     }

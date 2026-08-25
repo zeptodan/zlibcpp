@@ -31,6 +31,10 @@ add_executable(locked_stack test/locked_stack_test.cpp)
 target_link_libraries(locked_stack PRIVATE zlib GTest::gtest_main)
 gtest_discover_tests(locked_stack)
 
+add_executable(atomic_stack test/atomic_stack_test.cpp)
+target_link_libraries(atomic_stack PRIVATE zlib GTest::gtest_main)
+gtest_discover_tests(atomic_stack)
+
 add_executable(vector_benchmark benchmark/vector_benchmark.cpp)
 target_link_libraries(vector_benchmark PRIVATE zlib benchmark::benchmark)
 
@@ -42,3 +46,6 @@ target_link_libraries(skip_list_benchmark PRIVATE zlib benchmark::benchmark)
 
 add_executable(locked_stack_benchmark benchmark/locked_stack_benchmark.cpp)
 target_link_libraries(locked_stack_benchmark PRIVATE zlib benchmark::benchmark)
+
+add_executable(atomic_stack_benchmark benchmark/atomic_stack_benchmark.cpp)
+target_link_libraries(atomic_stack_benchmark PRIVATE zlib benchmark::benchmark)
